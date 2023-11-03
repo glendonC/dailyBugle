@@ -20,9 +20,8 @@ services:
       - HOST=0.0.0.0
     depends_on:
       - backend
-    # volumes:
-    #   - ./frontend:/usr/src/app
-    #   - /usr/src/app/node_modules
+    volumes:
+      - /usr/src/app/node_modules
 
 
 
