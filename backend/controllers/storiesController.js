@@ -24,3 +24,15 @@ exports.createStory = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.getStoriesByCategory = async (req, res) => {
+    try {
+      const categoryId = req.params.categoryId;
+      const stories = await Story.find({ category: categoryId }).populate('category');
+      res.json(stories);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  
+  
