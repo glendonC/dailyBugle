@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const storyRoutes = require('./routes/storyRoutes');
 const commentRoutes = require('./routes/commentRoutes');
+const adRoutes = require('./routes/adRoutes');
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
 // Use Routes
 app.use('/api/stories', storyRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/ads', adRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 5001;
