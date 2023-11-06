@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const storyRoutes = require('./routes/storyRoutes');
+const commentRoutes = require('./routes/commentRoutes');
 
 const app = express();
 
@@ -17,6 +19,10 @@ app.use(morgan('dev'));
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the Daily Bugle!' });
 });
+
+// Use Routes
+app.use('/api/stories', storyRoutes);
+app.use('/api/comments', commentRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 5001;
