@@ -1,24 +1,33 @@
-import logo from './logo.svg';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
+import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
+import StoryList from './components/StoryList/StoryList';
+import CategoryList from './components/CategoryList/CategoryList';
+import AdBanner from './components/AdBanner/AdBanner';
+import StoryDisplay from './components/StoryDisplay/StoryDisplay'; // Assume you have this component
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Header />
+        <Switch>
+          <Route exact path="/">
+            <main>
+              <CategoryList />
+              <StoryList />
+            </main>
+          </Route>
+          <Route path="/story/:id" component={StoryDisplay} />
+          {/* Add other routes here */}
+        </Switch>
+        <AdBanner />
+        <Footer />
+      </div>
+    </Router>
   );
 }
 

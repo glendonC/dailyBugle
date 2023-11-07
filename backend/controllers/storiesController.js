@@ -5,7 +5,8 @@ exports.getAllStories = async (req, res) => {
     const stories = await Story.find();
     res.json(stories);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: "An error occurred" });
   }
 };
 

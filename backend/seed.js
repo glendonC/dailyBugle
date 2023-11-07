@@ -26,7 +26,9 @@ const seedUsers = [
 
 const seedStories = [
   { title: 'Story 1', content: 'Content for story 1', author: null },
+  // Add more stories if needed
 ];
+
 
 const seedCategories = [
   { name: 'Technology' },
@@ -46,17 +48,24 @@ async function seedDB() {
     await Category.deleteMany({});
     await Advertisement.deleteMany({});
 
-    // Insert the seed data
-    const createdUsers = await User.insertMany(seedUsers);
-    // Update stories with author ID
-    seedStories.forEach((story, i) => {
-      story.author = createdUsers[i % createdUsers.length]._id;
+    // Insert the seed data for categories
+    const createdCategories = await Category.insertMany(seedCategories);
+    // Assuming you're creating only one category, use its ID for all stories
+    const categoryId = createdCategories[0]._id;
+
+    // Update stories with author ID and category ID
+    seedStories.forEach(story => {
+      story.author = seedUsers[0]._id; // Assign first user's ID as author for all stories
+      story.category = categoryId; // Assign the created category ID to all stories
     });
+
+    // Insert the seed data for users, stories, and advertisements
+    const createdUsers = await User.insertMany(seedUsers);
     await Story.insertMany(seedStories);
-    await Category.insertMany(seedCategories);
     await Advertisement.insertMany(seedAdvertisements);
 
     console.log('Database seeded!');
+    console.log('Categories inserted:', createdCategories);
     console.log('Users inserted:', createdUsers);
 
   } catch (e) {
@@ -65,6 +74,7 @@ async function seedDB() {
     mongoose.connection.close();
   }
 }
+
 
 // Run the seed function
 seedDB();
