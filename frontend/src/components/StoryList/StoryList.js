@@ -1,26 +1,39 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+// frontend/src/components/StoryList/StoryList.js
 
-// This is a mock function to fetch stories
-const fetchStories = () => {
-  return [
-    { id: 1, title: 'Story 1', summary: 'Summary of story 1' },
-    { id: 2, title: 'Story 2', summary: 'Summary of story 2' },
-  ];
-};
+import React, { useState, useEffect } from 'react';
 
 const StoryList = () => {
-  // Assume stories is the state holding your fetched stories
-  const stories = fetchStories();
+  const [stories, setStories] = useState([]);
+
+  useEffect(() => {
+    const fetchStories = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/stories`);;
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        if (!Array.isArray(data)) {
+          throw new TypeError('Data is not an array');
+        }
+        setStories(data);
+      } catch (error) {
+        console.error('Error fetching stories:', error);
+        // Handle error state appropriately, perhaps setting an error state
+      }
+    };
+
+    fetchStories();
+  }, []);
+
 
   return (
     <div>
       {stories.map((story) => (
-        <div key={story.id}>
-          <Link to={`/story/${story.id}`}>
-            <h2>{story.title}</h2>
-            <p>{story.summary}</p>
-          </Link>
+        <div key={story._id}>
+        <h3>{story.title}</h3>
+        <p>{story.content}</p>
+        {}
         </div>
       ))}
     </div>

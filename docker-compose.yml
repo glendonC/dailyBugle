@@ -1,4 +1,8 @@
 version: '3.8'
+
+networks:
+  app-network: # Define a network for inter-service communication
+
 services:
   backend:
     build: ./backend
@@ -9,7 +13,13 @@ services:
       - "5001:5001"
     environment:
       - NODE_ENV=development
-    command: sh -c "sleep infinity"
+      - PORT=5001
+      - MONGO_URI=mongodb://mongo:27017/daily_bugle_db # Use the service name `mongo`
+    depends_on:
+      - mongo
+    networks:
+      - app-network # Attach the service to the network
+    command: npm start
 
   frontend:
     build: ./frontend
@@ -20,12 +30,19 @@ services:
       - HOST=0.0.0.0
     depends_on:
       - backend
+    networks:
+      - app-network # Attach the service to the network
     volumes:
       - /usr/src/app/node_modules
-
-
 
   mongo:
     image: mongo:4.4
     ports:
       - "27017:27017"
+    networks:
+      - app-network # Attach the service to the network
+    healthcheck: # Define a health check for MongoDB
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/daily_bugle_db --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5

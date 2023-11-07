@@ -14,7 +14,7 @@ const StoryDisplay = () => {
     // Fetch the story data from your API
     const fetchStory = async () => {
       try {
-        const response = await fetch(`/api/stories/${id}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/stories/${id}`);
         const data = await response.json();
         setStory(data);
       } catch (error) {
