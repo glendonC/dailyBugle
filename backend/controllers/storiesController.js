@@ -2,13 +2,19 @@ const Story = require('../models/Story');
 
 exports.getAllStories = async (req, res) => {
   try {
-    const stories = await Story.find();
+    let query = {};
+    const search = req.query.search;
+    if (search) {
+      query.title = { $regex: search, $options: 'i' }; // Case-insensitive regex search
+    }
+    const stories = await Story.find(query).populate('author', 'username'); // Assuming you want to populate the author's username
     res.json(stories);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "An error occurred" });
   }
 };
+
 
 exports.createStory = async (req, res) => {
   const { title, content, author, category } = req.body;

@@ -21,6 +21,7 @@ function App() {
     dispatch({ 
         type: 'LOGIN', 
         payload: {
+            userId: loginResponse.userId,
             username: loginResponse.username,
             userRole: loginResponse.userRole
         }
