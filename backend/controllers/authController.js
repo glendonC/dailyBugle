@@ -4,14 +4,14 @@ const bcrypt = require('bcryptjs');
 const authController = {
     signupUser: async (req, res) => {
       try {
-        const { username, email, password } = req.body;
+        const { username, email, password, role } = req.body;
         const hashedPassword = bcrypt.hashSync(password, 10);
   
         const newUser = new User({
           username,
           email,
           password: hashedPassword,
-          role: 'reader'
+          role: role
         });
     
           const savedUser = await newUser.save();
