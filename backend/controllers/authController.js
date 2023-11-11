@@ -33,7 +33,22 @@ const authController = {
         } catch (error) {
         res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
         }
+    },
+    signoutUser: async (req, res) => {
+      // If using express-session or similar
+      req.session.destroy(err => {
+          if (err) {
+              res.status(500).json({ success: false, message: 'Error signing out', error: err.message });
+          } else {
+              res.json({ success: true, message: 'Sign out successful' });
+          }
+      });
     }
 };
 
 module.exports = authController;
+
+
+
+
+
