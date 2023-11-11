@@ -11,13 +11,20 @@ const LoginForm = ({ onLogin }) => {
     event.preventDefault();
     try {
       const response = await AuthService.login(username, password);
-      onLogin(response); // This should set the authentication state
-      history.push('/'); // Redirect to the home route
+      console.log("Login response:", response);
+      if (response.success) {
+        const userRole = response.userRole; // Replace with the actual property name from the response
+        onLogin(userRole); // Pass the user role to onLogin
+        history.push('/'); // Redirect to the home route
+      } else {
+        // Handle unsuccessful login
+      }
     } catch (error) {
-      // Handle errors, such as displaying a message to the user
       console.error(error);
     }
   };
+  
+  
 
   return (
     <form onSubmit={handleSubmit}>

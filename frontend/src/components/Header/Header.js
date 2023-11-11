@@ -1,21 +1,27 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom'; // If you are using react-router
+import { useHistory } from 'react-router-dom';
+import { useAuth } from '../../AuthContext';
 
 const Header = () => {
   const history = useHistory();
+  const { auth, dispatch } = useAuth();
 
   const handleSignout = () => {
-    // Clear authentication tokens or session data here
-    localStorage.removeItem('token'); // Example if you're using localStorage
-
-    // Redirect to login page or home page
+    dispatch({ type: 'LOGOUT' });
+    localStorage.removeItem('token'); // If using tokens
     history.push('/login');
   };
-
+  console.log("Auth state in header:", auth);
   return (
     <div>
-      Your Header Markup Here
-      <button onClick={handleSignout}>Sign Out</button>
+      {auth.isAuthenticated ? (
+        <>
+          <span>Welcome, {auth.userRole}</span>
+          <button onClick={handleSignout}>Sign Out</button>
+        </>
+      ) : (
+        <span>Your Header Markup Here</span>
+      )}
     </div>
   );
 };
