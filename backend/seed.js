@@ -4,7 +4,13 @@ const Story = require('./models/Story');
 const Comment = require('./models/Comment');
 const Category = require('./models/Category');
 const Advertisement = require('./models/Advertisement');
+const bcrypt = require('bcryptjs');
 
+async function hashPasswords(users) {
+  for (let user of users) {
+    user.password = bcrypt.hashSync(user.password, 10);
+  }
+}
 // Database URL
 const dbUrl = 'mongodb://localhost:27017/daily_bugle_db';
 
@@ -20,9 +26,10 @@ mongoose.connection.once('open', () => {
 });
 
 const seedUsers = [
-  { username: 'user1', email: 'user1@example.com', password: 'password123' },
-  { username: 'user2', email: 'user2@example.com', password: 'password123' },
+  { username: 'user1', email: 'user1@example.com', password: 'password123', role: 'reader' },
+  { username: 'user2', email: 'user2@example.com', password: 'password123', role: 'author' },
 ];
+
 
 const seedStories = [
   { title: 'Story 1', content: 'Content for story 1', author: null },
@@ -58,7 +65,8 @@ async function seedDB() {
       story.author = seedUsers[0]._id; // Assign first user's ID as author for all stories
       story.category = categoryId; // Assign the created category ID to all stories
     });
-
+    await hashPasswords(seedUsers);
+    
     // Insert the seed data for users, stories, and advertisements
     const createdUsers = await User.insertMany(seedUsers);
     await Story.insertMany(seedStories);
