@@ -2,11 +2,13 @@
 import React, { useEffect, useState } from 'react';
 import CommentForm from '../CommentForm/CommentForm';
 import CommentList from '../CommentList/CommentList';
-import { useAuth } from '../../AuthContext'; // Import useAuth
+import { useAuth } from '../../AuthContext';
 
 const ReaderView = () => {
     const [stories, setStories] = useState([]);
-    const { auth } = useAuth(); // Use useAuth
+    const [filteredStories, setFilteredStories] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const { auth } = useAuth();
 
     useEffect(() => {
         // Fetch stories along with their comments
@@ -21,6 +23,7 @@ const ReaderView = () => {
                         return { ...story, comments: commentData };
                     }));
                     setStories(storiesWithComments);
+                    setFilteredStories(storiesWithComments); // Initialize filteredStories with all stories
                 } else {
                     throw new Error('Failed to fetch stories');
                 }
@@ -64,11 +67,29 @@ const ReaderView = () => {
         }
     };
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        if (e.target.value === '') {
+            setFilteredStories(stories);
+        } else {
+            const filtered = stories.filter(story => 
+                story.title.toLowerCase().includes(e.target.value.toLowerCase()) ||
+                story.content.toLowerCase().includes(e.target.value.toLowerCase())
+            );
+            setFilteredStories(filtered);
+        }
+    };
     
     return (
         <div>
             <h1>Reader's View</h1>
-            {stories.map((story) => (
+            <input 
+                type="text" 
+                placeholder="Search stories..." 
+                value={searchQuery} 
+                onChange={handleSearchChange} 
+            />
+            {filteredStories.map((story) => (
                 <div key={story._id}>
                     <h2>{story.title}</h2>
                     <p>{story.content}</p>
