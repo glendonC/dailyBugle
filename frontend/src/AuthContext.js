@@ -5,7 +5,8 @@ const AuthContext = createContext();
 // Define an initial state
 const initialState = {
   isAuthenticated: false,
-  userRole: null
+  userRole: null,
+  username: null
 };
 
 // Define a reducer function
@@ -15,8 +16,9 @@ function authReducer(state, action) {
       return {
         ...state,
         isAuthenticated: true,
-        userRole: action.payload
-      };
+        username: action.payload.username,
+        userRole: action.payload.userRole
+    };
     case 'LOGOUT':
       return {
         ...state,

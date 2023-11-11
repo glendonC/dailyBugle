@@ -20,22 +20,23 @@ const authController = {
           res.status(500).json({ success: false, message: 'Error signing up', error: error.message });
         }
       },
-    loginUser: async (req, res) => {
+      loginUser: async (req, res) => {
         try {
-        const { username, password } = req.body;
-        const user = await User.findOne({ username });
-
-        if (user && bcrypt.compareSync(password, user.password)) {
-          res.json({ 
-            success: true, 
-            message: 'Authentication successful!',
-            userRole: user.role // Assuming your User model has a 'role' field
-          });
-        } else {
-            res.status(401).json({ success: false, message: 'Authentication failed. User not found or password incorrect.' });
-        }
+            const { username, password } = req.body;
+            const user = await User.findOne({ username });
+    
+            if (user && bcrypt.compareSync(password, user.password)) {
+                res.json({ 
+                    success: true, 
+                    message: 'Authentication successful!',
+                    username: user.username,
+                    userRole: user.role
+                });
+            } else {
+                res.status(401).json({ success: false, message: 'Authentication failed. User not found or password incorrect.' });
+            }
         } catch (error) {
-        res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+            res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
         }
     },
     signoutUser: async (req, res) => {

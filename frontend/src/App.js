@@ -15,9 +15,16 @@ import SignupForm from './components/SignupForm/SignupForm';
 function App() {
   const { dispatch } = useAuth(); // Use the useAuth hook
 
-  const handleLogin = (userRole) => {
-    dispatch({ type: 'LOGIN', payload: userRole });
-  };
+  const handleLogin = (loginResponse) => {
+    dispatch({ 
+        type: 'LOGIN', 
+        payload: {
+            username: loginResponse.username,
+            userRole: loginResponse.userRole
+        }
+    });
+};
+
 
   const handleLogout = () => {
     dispatch({ type: 'LOGOUT' });

@@ -13,8 +13,7 @@ const LoginForm = ({ onLogin }) => {
       const response = await AuthService.login(username, password);
       console.log("Login response:", response);
       if (response.success) {
-        const userRole = response.userRole; // Replace with the actual property name from the response
-        onLogin(userRole); // Pass the user role to onLogin
+        onLogin(response); // Pass the entire response object
         history.push('/'); // Redirect to the home route
       } else {
         // Handle unsuccessful login

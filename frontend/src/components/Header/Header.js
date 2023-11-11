@@ -14,16 +14,16 @@ const Header = () => {
   console.log("Auth state in header:", auth);
   return (
     <div>
-      {auth.isAuthenticated ? (
-        <>
-          <span>Welcome, {auth.userRole}</span>
-          <button onClick={handleSignout}>Sign Out</button>
-        </>
-      ) : (
-        <span>Your Header Markup Here</span>
-      )}
+        {auth.isAuthenticated ? (
+            <>
+                <span>Welcome, {auth.username}</span> {}
+                <button onClick={handleSignout}>Sign Out</button>
+            </>
+        ) : (
+            <span>Your Header Markup Here</span>
+        )}
     </div>
-  );
+);
 };
 
 export default Header;
