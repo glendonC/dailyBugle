@@ -1,9 +1,9 @@
 const AuthService = {
-    signup: async (username, email, password) => {
+    signup: async (username, email, password, role) => {
       const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username, email, password, role }),
       };
   
       try {

@@ -25,6 +25,12 @@ function App() {
     });
 };
 
+const onSignup = (signupResponse) => {
+    // Handle signup response here
+    // For example, redirect the user or show a success message
+    console.log("Signup successful:", signupResponse);
+    // Add your logic for what should happen after a successful signup
+  };
 
   const handleLogout = () => {
     dispatch({ type: 'LOGOUT' });
@@ -45,7 +51,9 @@ function App() {
           <Route path="/login">
             <LoginForm onLogin={handleLogin} />
           </Route>
-          <Route path="/signup" component={SignupForm} />
+          <Route path="/signup">
+            <SignupForm onSignup={onSignup} />
+          </Route>
           {/* Other routes */}
         </Switch>
         <AdBanner />
