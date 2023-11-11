@@ -8,6 +8,7 @@ const commentRoutes = require('./routes/commentRoutes');
 const adRoutes = require('./routes/adRoutes');
 const authRoutes = require('./routes/authRoutes');
 const storiesController = require('./controllers/storiesController');
+const categoryRoutes = require('./routes/categoryRoutes');
 const mongoose = require('mongoose');
 
 const app = express();
@@ -35,6 +36,7 @@ app.use('/api', authRoutes);
 app.use('/api/stories', storyRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/ads', adRoutes);
+app.use('/api/categories', categoryRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 5001;

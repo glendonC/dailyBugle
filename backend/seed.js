@@ -1,19 +1,20 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const User = require('./models/User');
 const Story = require('./models/Story');
 const Comment = require('./models/Comment');
 const Category = require('./models/Category');
 const Advertisement = require('./models/Advertisement');
-const bcrypt = require('bcryptjs');
 
+// Hash passwords for seed users
 async function hashPasswords(users) {
   for (let user of users) {
     user.password = bcrypt.hashSync(user.password, 10);
   }
 }
+
 // Database URL
 const dbUrl = 'mongodb://localhost:27017/daily_bugle_db';
-
 
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
@@ -30,15 +31,11 @@ const seedUsers = [
   { username: 'user2', email: 'user2@example.com', password: 'password123', role: 'author' },
 ];
 
-
-const seedStories = [
-  { title: 'Story 1', content: 'Content for story 1', author: null },
-  // Add more stories if needed
-];
-
-
 const seedCategories = [
   { name: 'Technology' },
+  { name: 'Sports' },
+  { name: 'Entertainment' },
+  { name: 'Others' }
 ];
 
 const seedAdvertisements = [
@@ -55,26 +52,31 @@ async function seedDB() {
     await Category.deleteMany({});
     await Advertisement.deleteMany({});
 
-    // Insert the seed data for categories
-    const createdCategories = await Category.insertMany(seedCategories);
-    // Assuming you're creating only one category, use its ID for all stories
-    const categoryId = createdCategories[0]._id;
-
-    // Update stories with author ID and category ID
-    seedStories.forEach(story => {
-      story.author = seedUsers[0]._id; // Assign first user's ID as author for all stories
-      story.category = categoryId; // Assign the created category ID to all stories
-    });
+    // Hash passwords for users
     await hashPasswords(seedUsers);
-    
-    // Insert the seed data for users, stories, and advertisements
-    const createdUsers = await User.insertMany(seedUsers);
-    await Story.insertMany(seedStories);
-    await Advertisement.insertMany(seedAdvertisements);
 
-    console.log('Database seeded!');
-    console.log('Categories inserted:', createdCategories);
-    console.log('Users inserted:', createdUsers);
+    // Seed Users
+    const createdUsers = await User.insertMany(seedUsers);
+    console.log('Users seeded!');
+
+    // Seed Categories
+    const createdCategories = await Category.insertMany(seedCategories);
+    console.log('Categories seeded!');
+
+    // Seed Stories (assigning random categories and authors)
+    const seedStories = createdCategories.map((category, index) => ({
+      title: `Story ${index + 1}`,
+      content: `Content for story ${index + 1}`,
+      author: createdUsers[Math.floor(Math.random() * createdUsers.length)]._id,
+      category: category._id
+    }));
+
+    await Story.insertMany(seedStories);
+    console.log('Stories seeded!');
+
+    // Seed Advertisements
+    await Advertisement.insertMany(seedAdvertisements);
+    console.log('Advertisements seeded!');
 
   } catch (e) {
     console.error(e);
@@ -82,7 +84,6 @@ async function seedDB() {
     mongoose.connection.close();
   }
 }
-
 
 // Run the seed function
 seedDB();

@@ -10,11 +10,11 @@ exports.getAllComments = async (req, res) => {
 };
 
 exports.createComment = async (req, res) => {
-  const { text, author, storyId } = req.body;
+  const { content, author, story } = req.body;
   const newComment = new Comment({
-    text,
+    content,
     author,
-    story: storyId
+    story
   });
 
   try {
@@ -22,5 +22,15 @@ exports.createComment = async (req, res) => {
     res.status(201).json(savedComment);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+exports.getCommentsByStory = async (req, res) => {
+  try {
+      const storyId = req.params.storyId;
+      const comments = await Comment.find({ story: storyId }).populate('author', 'username'); // Assuming you want to populate author details
+      res.json(comments);
+  } catch (error) {
+      res.status(500).json({ message: error.message });
   }
 };

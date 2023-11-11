@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { getAllComments, createComment } = require('../controllers/commentsController');
+const { getAllComments, createComment, getCommentsByStory } = require('../controllers/commentsController');
 
-router.get('/', getAllComments); // Get all comments
-router.post('/', createComment); // Create a new comment
+// Existing routes
+router.get('/', getAllComments);
+router.post('/', createComment);
+
+// Add this route
+router.get('/story/:storyId', getCommentsByStory);
 
 module.exports = router;
