@@ -11,11 +11,12 @@ exports.getAllStories = async (req, res) => {
 };
 
 exports.createStory = async (req, res) => {
-  const { title, content, author } = req.body;
+  const { title, content, author, category } = req.body;
   const newStory = new Story({
     title,
     content,
-    author
+    author,
+    category
   });
 
   try {
