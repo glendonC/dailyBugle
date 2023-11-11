@@ -1,17 +1,18 @@
-const User = require('../models/user');
+const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 
 const authController = {
     signupUser: async (req, res) => {
-        try {
-          const { username, email, password } = req.body;
-          const hashedPassword = bcrypt.hashSync(password, 10); // The number 10 is the salt rounds
-    
-          const newUser = new User({
-            username,
-            email,
-            password: hashedPassword,
-          });
+      try {
+        const { username, email, password } = req.body;
+        const hashedPassword = bcrypt.hashSync(password, 10);
+  
+        const newUser = new User({
+          username,
+          email,
+          password: hashedPassword,
+          role: 'reader'
+        });
     
           const savedUser = await newUser.save();
           res.status(201).json({ success: true, message: 'User created successfully', userId: savedUser._id });
@@ -25,8 +26,11 @@ const authController = {
         const user = await User.findOne({ username });
 
         if (user && bcrypt.compareSync(password, user.password)) {
-            // Generate session or token here
-            res.json({ success: true, message: 'Authentication successful!' });
+          res.json({ 
+            success: true, 
+            message: 'Authentication successful!',
+            userRole: user.role // Assuming your User model has a 'role' field
+          });
         } else {
             res.status(401).json({ success: false, message: 'Authentication failed. User not found or password incorrect.' });
         }
