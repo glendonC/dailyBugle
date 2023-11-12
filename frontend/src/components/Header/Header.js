@@ -17,11 +17,11 @@ const Header = () => {
     <div>
         {auth.isAuthenticated ? (
             <>
-                <span className="username">Welcome, {auth.username}</span> {}
+                <span className="username">{auth.username}</span> {}
                 <button className="sign-out-btn" onClick={handleSignout}>Sign Out</button>
             </>
         ) : (
-            <span>Sign up / Log in to see more!</span>
+            <span>Sign up / Log in to see more</span>
         )}
     </div>
 );

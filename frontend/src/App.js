@@ -52,7 +52,11 @@ function App() {
         <Header onLogout={handleLogout} />
         <Switch>
           <Route exact path="/">
-            {auth && auth.userRole === 'reader' ? <Redirect to="/reader-view" /> : <UnauthenticatedView />}
+            {auth.isAuthenticated ? (
+              auth.userRole === 'reader' ? <Redirect to="/reader-view" /> : <Redirect to="/author-view" />
+            ) : (
+              <UnauthenticatedView />
+            )}
           </Route>
           <Route path="/reader-view" component={ReaderView} />
           <Route path="/author-view" component={AuthorView} />
