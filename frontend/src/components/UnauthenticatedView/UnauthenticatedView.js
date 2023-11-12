@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, Grid, Box, Typography, Paper, Button } from '@mui/material';
+import AdBanner from '../AdBanner/AdBanner';
 
 const UnauthenticatedView = () => {
     const [stories, setStories] = useState([]);
@@ -51,6 +52,7 @@ const UnauthenticatedView = () => {
                     </Grid>
                 ))}
             </Grid>
+            <AdBanner />
         </Container>
     );
 };
