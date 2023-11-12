@@ -7,29 +7,57 @@ const AuthorView = () => {
         title: '',
         teaser: '',
         content: '',
-        category: ''
-    });
+        category: '',
+        id: null
+    });    
     const [categories, setCategories] = useState([]);
     const [message, setMessage] = useState('');
+    const [authorStories, setAuthorStories] = useState([]);
     const { auth } = useAuth();
 
     useEffect(() => {
+        // Fetch categories
         fetch('http://localhost:5001/api/categories')
             .then(response => response.json())
             .then(data => setCategories(data))
             .catch(error => console.error('Error fetching categories:', error));
-    }, []);
+    
+        if (auth.userId) {
+            fetch(`http://localhost:5001/api/stories/author/${auth.userId}`)
+                    .then(response => response.json())
+                    .then(storiesData => setAuthorStories(storiesData))
+                    .catch(error => console.error('Error fetching author\'s stories:', error));
+            }
+        }, [auth.userId]);
+    
 
     const handleChange = (event) => {
         const { name, value } = event.target;
         setStory({ ...story, [name]: value });
     };
 
+    const handleEditStory = (storyToEdit) => {
+        setStory({
+            title: storyToEdit.title,
+            teaser: storyToEdit.teaser,
+            content: storyToEdit.content,
+            category: storyToEdit.category,
+            id: storyToEdit._id
+        });
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
+        const method = story.id ? 'PUT' : 'POST';
+        const endpoint = story.id 
+        ? `http://localhost:5001/api/stories/${story.id}` 
+        : 'http://localhost:5001/api/stories';
+    
+            
+        
         try {
-            const response = await fetch('http://localhost:5001/api/stories', {
-                method: 'POST',
+            const response = await fetch(endpoint, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                     // Include authorization header if your API requires it
@@ -39,14 +67,25 @@ const AuthorView = () => {
                     teaser: story.teaser,
                     content: story.content,
                     category: story.category,
-                    // Include author information if necessary, e.g., author: auth.userId
+                    author: auth.userId
                 }),
             });
-    
+        
             const data = await response.json();
             if (response.ok) {
-                setMessage('Story submitted successfully!');
-                setStory({ title: '', teaser: '', content: '', category: '' }); // Clear the form fields
+                if (story.id) {
+                    // Update existing story in authorStories
+                    setAuthorStories(authorStories.map(item => 
+                        item._id === story.id ? data : item
+                    ));
+                    setMessage('Story updated successfully!');
+                } else {
+                    // Add new story to authorStories
+                    setAuthorStories([...authorStories, data]);
+                    setMessage('Story submitted successfully!');
+                }
+                // Clear the form fields
+                setStory({ title: '', teaser: '', content: '', category: '', id: null }); 
             } else {
                 throw new Error(data.message || 'Failed to submit story');
             }
@@ -56,7 +95,7 @@ const AuthorView = () => {
         }
     };
     
-
+    
     return (
         <Container maxWidth="md">
             <Box my={4}>
@@ -110,6 +149,12 @@ const AuthorView = () => {
                     </Button>
                 </form>
                 {message && <Typography color="textSecondary">{message}</Typography>}
+                {authorStories.map(storyItem => (
+                    <div key={storyItem._id}>
+                        <h3>{storyItem.title}</h3>
+                        <Button onClick={() => handleEditStory(storyItem)}>Edit</Button>
+                    </div>
+                ))}
             </Box>
         </Container>
     );
