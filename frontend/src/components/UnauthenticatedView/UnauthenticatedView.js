@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Container, Grid, Box, Typography, Paper, Button } from '@mui/material';
 
 const UnauthenticatedView = () => {
     const [stories, setStories] = useState([]);
@@ -22,28 +23,35 @@ const UnauthenticatedView = () => {
         fetchStories();
     }, []);
 
-    // Function to handle navigation to login
     const navigateToLogin = () => {
         history.push('/login');
     };
 
-    // Function to handle navigation to sign up
     const navigateToSignup = () => {
         history.push('/signup');
     };
 
     return (
-        <div>
-            <button onClick={navigateToLogin}>Login</button>
-            <button onClick={navigateToSignup}>Sign Up</button>
-            {stories.map((story) => (
-                <div key={story._id}>
-                    <h2>{story.title}</h2>
-                    <p>{story.content}</p>
-                    {}
-                </div>
-            ))}
-        </div>
+        <Container maxWidth="md">
+            <Box my={4} textAlign="center">
+                <Button onClick={navigateToLogin} variant="contained" color="primary" style={{ marginRight: 10 }}>
+                    Login
+                </Button>
+                <Button onClick={navigateToSignup} variant="contained" color="secondary">
+                    Sign Up
+                </Button>
+            </Box>
+            <Grid container spacing={3}>
+                {stories.map((story) => (
+                    <Grid item xs={12} key={story._id}>
+                        <Paper elevation={2} style={{ padding: 16 }}>
+                            <Typography variant="h6">{story.title}</Typography>
+                            <Typography variant="body1">{story.content}</Typography>
+                        </Paper>
+                    </Grid>
+                ))}
+            </Grid>
+        </Container>
     );
 };
 
