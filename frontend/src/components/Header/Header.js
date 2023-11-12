@@ -17,7 +17,7 @@ const Header = () => {
     <div>
         {auth.isAuthenticated ? (
             <>
-                <span className="username">{auth.username}</span> {}
+                <span className="username">Welcome, {auth.username}</span> {}
                 <button className="sign-out-btn" onClick={handleSignout}>Sign Out</button>
             </>
         ) : (
