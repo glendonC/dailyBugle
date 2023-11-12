@@ -1,13 +1,14 @@
 import React from 'react';
-import './AdBanner.css';
+import { Box, Typography, Paper } from '@mui/material';
 
 function AdBanner() {
-  // Placeholder for ad content
   return (
-    <div className="ad-banner">
-      {/* Ad content or image goes here */}
-      <p>Advertisement</p>
-    </div>
+    <Box my={2} p={2} component={Paper} elevation={4}>
+      <Typography variant="subtitle1" align="center" color="textSecondary">
+        Advertisement
+      </Typography>
+      {/* Add additional ad content or image here */}
+    </Box>
   );
 }
 
