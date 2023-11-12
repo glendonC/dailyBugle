@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom'; // Import useHistory
+import { useHistory } from 'react-router-dom';
 import AuthService from '../../services/AuthService';
+import { TextField, Button, Container, Box } from '@mui/material';
 
 const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const history = useHistory(); // Create the history instance
+  const history = useHistory();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -13,8 +14,8 @@ const LoginForm = ({ onLogin }) => {
       const response = await AuthService.login(username, password);
       console.log("Login response:", response);
       if (response.success) {
-        onLogin(response); // Pass the entire response object
-        history.push('/'); // Redirect to the home route
+        onLogin(response);
+        history.push('/');
       } else {
         // Handle unsuccessful login
       }
@@ -22,21 +23,32 @@ const LoginForm = ({ onLogin }) => {
       console.error(error);
     }
   };
-  
-  
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Username:
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-      </label>
-      <label>
-        Password:
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      </label>
-      <button type="submit">Login</button>
-    </form>
+    <Container maxWidth="sm">
+      <Box my={4}>
+        <form onSubmit={handleSubmit}>
+          <TextField 
+            fullWidth 
+            label="Username" 
+            value={username} 
+            onChange={(e) => setUsername(e.target.value)} 
+            margin="normal"
+          />
+          <TextField 
+            fullWidth 
+            label="Password" 
+            type="password" 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            margin="normal"
+          />
+          <Button variant="contained" color="primary" type="submit" fullWidth>
+            Login
+          </Button>
+        </form>
+      </Box>
+    </Container>
   );
 };
 
