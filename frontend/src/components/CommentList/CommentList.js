@@ -1,7 +1,7 @@
 // CommentList.js
 import React from 'react';
 
-const CommentList = ({ comments, currentUserId, onEditComment }) => {
+const CommentList = ({ comments, currentUserId, onEditComment, onDeleteComment }) => {
   return (
       <div>
           <h3>Comments</h3>
@@ -10,7 +10,10 @@ const CommentList = ({ comments, currentUserId, onEditComment }) => {
                   <strong>{comment.author.username}</strong>
                   <p>{comment.content}</p>
                   {comment.author === currentUserId && (
-                      <button onClick={() => onEditComment(comment)}>Edit</button>
+                    <div>
+                      <button onClick={() => onEditComment(comment._id, comment.content)}>Edit</button>
+                      <button onClick={() => onDeleteComment(comment._id, comment.story)}>Delete</button>
+                    </div>
                   )}
               </div>
           ))}

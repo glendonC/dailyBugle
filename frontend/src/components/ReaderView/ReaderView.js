@@ -79,34 +79,32 @@ const ReaderView = () => {
             setFilteredStories(filtered);
         }
     };
-    
-    const handleEditComment = async (comment) => {
-        // Implementation depends on how you want to handle the edit interface
-        // For example, you could prompt for the new content via window.prompt
-        const newContent = window.prompt("Edit your comment:", comment.content);
-        if (newContent && newContent !== comment.content) {
+
+        // Function to handle editing a comment
+        const handleEditComment = async (commentId, newContent) => {
+            // Prompt for new content, return if no changes
+            const updatedContent = window.prompt("Edit your comment:", newContent);
+            if (!updatedContent || updatedContent === newContent) return;
+        
             try {
-                const response = await fetch(`http://localhost:5001/api/comments/${comment._id}`, {
+                const response = await fetch(`http://localhost:5001/api/comments/${commentId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         // Include authorization token if required
                     },
-                    body: JSON.stringify({ content: newContent }),
+                    body: JSON.stringify({ content: updatedContent }),
                 });
-    
+        
                 const updatedComment = await response.json();
                 if (response.ok) {
                     // Update the stories state to reflect the edited comment
-                    setStories(stories.map(story => {
-                        if (story._id === comment.story) {
-                            return {
-                                ...story,
-                                comments: story.comments.map(c => c._id === comment._id ? updatedComment : c)
-                            };
-                        }
-                        return story;
-                    }));
+                    setStories(stories.map(story => ({
+                        ...story,
+                        comments: story.comments.map(comment =>
+                            comment._id === commentId ? { ...comment, content: updatedContent } : comment
+                        ),
+                    })));
                 } else {
                     throw new Error(updatedComment.message || 'Failed to edit comment');
                 }
@@ -114,8 +112,40 @@ const ReaderView = () => {
                 console.error('Error:', error);
                 // Handle error in editing comment
             }
-        }
-    };
+        };
+        
+    
+        // Function to handle deleting a comment
+        const handleDeleteComment = async (commentId, storyId) => {
+            try {
+                const response = await fetch(`http://localhost:5001/api/comments/${commentId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Include authorization token if required
+                    }
+                });
+        
+                if (response.ok) {
+                    // Remove the deleted comment from the state
+                    setStories(stories.map(story => {
+                        if (story._id === storyId) {
+                            return {
+                                ...story,
+                                comments: story.comments.filter(comment => comment._id !== commentId)
+                            };
+                        }
+                        return story;
+                    }));
+                } else {
+                    throw new Error('Failed to delete comment');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Handle error in deleting comment
+            }
+        };
+        
     
     return (
         <div>
@@ -132,10 +162,11 @@ const ReaderView = () => {
                     <p>{story.content}</p>
                     <CommentForm onCommentSubmit={(commentContent) => submitComment(commentContent, story._id)} />
                     <CommentList 
-                            comments={story.comments || []}
-                            currentUserId={auth.userId}
-                            onEditComment={handleEditComment}
-                    />
+                    comments={story.comments || []}
+                    currentUserId={auth.userId}
+                    onEditComment={handleEditComment}
+                    onDeleteComment={handleDeleteComment}
+                />
                 </div>
             ))}
         </div>
