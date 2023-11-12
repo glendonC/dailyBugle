@@ -20,7 +20,7 @@ app.use(morgan('dev'));
 
 // CORS Configuration
 const corsOptions = {
-  origin: 'http://localhost:3001', // Ensure this matches the frontend's origin
+  origin: ['http://localhost:8080', 'http://localhost:3001', 'http://localhost:3000'],
   optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));

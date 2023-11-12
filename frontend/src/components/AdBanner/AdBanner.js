@@ -5,9 +5,7 @@ import { useAuth } from '../../AuthContext';
 function AdBanner() {
     const [ad, setAd] = useState(null);
     const [openModal, setOpenModal] = useState(false);
-    const { auth } = useAuth(); // Use the useAuth hook to access the auth state
-
-    // Determine user ID or anonymous status
+    const { auth } = useAuth();
     const userId = auth.userId ? auth.userId : 'anonymous';
 
     useEffect(() => {
@@ -37,7 +35,7 @@ function AdBanner() {
 
     const handleCloseModal = (event) => {
         event.stopPropagation();
-        setOpenModal(false); // Close the modal
+        setOpenModal(false);
     };
 
     if (!ad) return null;
@@ -45,15 +43,15 @@ function AdBanner() {
     return (
         <Box my={2} p={2} component={Paper} elevation={4} onClick={handleAdClick}>
             <Typography variant="subtitle1" align="center" color="textSecondary">
-                {ad.title} {/* Display ad title */}
+                {ad.title} {}
             </Typography>
-            {/* Add additional ad content or image here */}
+            {}
 
             <Modal open={openModal} onClose={handleCloseModal}>
                 <Box style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: 20 }}>
                     <Typography variant="h6">{ad.title}</Typography>
                     <Typography variant="body1">{ad.content}</Typography>
-                    {/* Display more ad details or content here */}
+                    {}
                     <Button onClick={handleCloseModal}>Close</Button>
                 </Box>
             </Modal>
