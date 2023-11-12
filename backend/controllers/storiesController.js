@@ -44,4 +44,29 @@ exports.getStoriesByCategory = async (req, res) => {
     }
   };
   
-  
+  exports.getStoriesByAuthor = async (req, res) => {
+    try {
+        const authorId = req.params.userId;
+        const stories = await Story.find({ author: authorId });
+        res.json(stories);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching stories by author" });
+    }
+};
+
+
+exports.updateStory = async (req, res) => {
+  const { storyId } = req.params;
+  const { title, teaser, content, category } = req.body;
+
+  try {
+      const updatedStory = await Story.findByIdAndUpdate(
+          storyId,
+          { title, teaser, content, category },
+          { new: true }
+      );
+      res.json(updatedStory);
+  } catch (error) {
+  }
+};
