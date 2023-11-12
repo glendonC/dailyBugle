@@ -27,7 +27,14 @@ const Header = () => {
                         <Button color="inherit" onClick={handleSignout}>Sign Out</Button>
                     </Box>
                 ) : (
-                    <Button color="inherit" onClick={() => history.push('/login')}>Sign up / Log in</Button>
+                    <>
+                        <Button color="inherit" onClick={() => history.push('/login')} style={{ marginRight: 10 }}>
+                            Log In
+                        </Button>
+                        <Button color="inherit" onClick={() => history.push('/signup')}>
+                            Sign Up
+                        </Button>
+                    </>
                 )}
             </Toolbar>
         </AppBar>

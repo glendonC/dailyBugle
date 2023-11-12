@@ -27,8 +27,35 @@ const AuthorView = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        // Submission logic remains the same
+        try {
+            const response = await fetch('http://localhost:5001/api/stories', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Include authorization header if your API requires it
+                },
+                body: JSON.stringify({
+                    title: story.title,
+                    teaser: story.teaser,
+                    content: story.content,
+                    category: story.category,
+                    // Include author information if necessary, e.g., author: auth.userId
+                }),
+            });
+    
+            const data = await response.json();
+            if (response.ok) {
+                setMessage('Story submitted successfully!');
+                setStory({ title: '', teaser: '', content: '', category: '' }); // Clear the form fields
+            } else {
+                throw new Error(data.message || 'Failed to submit story');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setMessage('An error occurred while submitting the story.');
+        }
     };
+    
 
     return (
         <Container maxWidth="md">

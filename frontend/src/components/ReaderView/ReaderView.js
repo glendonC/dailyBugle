@@ -3,7 +3,7 @@ import { useAuth } from '../../AuthContext';
 import CommentForm from '../CommentForm/CommentForm';
 import CommentList from '../CommentList/CommentList';
 import AdBanner from '../AdBanner/AdBanner';
-import { Container, Grid, Box, Typography, Paper } from '@mui/material';
+import { Container, Grid, Box, Typography, Paper, TextField, Chip } from '@mui/material';
 
 const ReaderView = () => {
     const [stories, setStories] = useState([]);
@@ -154,10 +154,21 @@ const ReaderView = () => {
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={8}>
                             <Typography variant="h4">Reader's View</Typography>
-                            {/* Ensure the map function is correctly iterating over filteredStories */}
+                            <TextField
+                                fullWidth
+                                label="Search stories..."
+                                type="text"
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                margin="normal"
+                            />
                             {filteredStories.map((story) => (
                                 <Box key={story._id} my={2} p={2} component={Paper} elevation={2}>
                                     <Typography variant="h5">{story.title}</Typography>
+                                    {/* Display the category */}
+                                    {story.category && (
+                                        <Chip label={story.category.name} color="primary" size="small" style={{ margin: '10px 0' }} />
+                                    )}
                                     <Typography variant="body1" gutterBottom>{story.content}</Typography>
                                     <CommentForm onCommentSubmit={(commentContent) => submitComment(commentContent, story._id)} />
                                     <CommentList
