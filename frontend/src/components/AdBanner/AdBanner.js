@@ -7,6 +7,9 @@ function AdBanner() {
     const [openModal, setOpenModal] = useState(false);
     const { auth } = useAuth(); // Use the useAuth hook to access the auth state
 
+    // Determine user ID or anonymous status
+    const userId = auth.userId ? auth.userId : 'anonymous';
+
     useEffect(() => {
         fetch('http://localhost:5001/api/ads/random')
             .then(response => response.json())
@@ -15,20 +18,20 @@ function AdBanner() {
                 fetch('http://localhost:5001/api/ads/impression', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ adId: data._id, userId: auth.userId })
+                    body: JSON.stringify({ adId: data._id, userId })
                 });
             })
             .catch(error => console.error('Error fetching random ad:', error));
-    }, [auth.userId]); // Add auth.userId as a dependency
+    }, [auth.userId]);
 
     const handleAdClick = () => {
         if (ad) {
-            fetch('http://localhost:5001/api/ads/click', { // Changed to /click
+            fetch('http://localhost:5001/api/ads/click', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ adId: ad._id, userId: auth.userId })
+                body: JSON.stringify({ adId: ad._id, userId })
             });
-            setOpenModal(true); // Open the modal on ad click
+            setOpenModal(true);
         }
     };
 

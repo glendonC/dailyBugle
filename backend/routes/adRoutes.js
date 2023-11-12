@@ -6,12 +6,16 @@ const Advertisement = require('../models/Advertisement');
 // Track ad impressions
 router.post('/impression', async (req, res) => {
     const { adId, userId } = req.body; // Extract adId and userId from request body
+    const ipAddress = req.ip; // Get IP address from request
+    const userAgent = req.get('User-Agent'); // Get user agent from request headers
 
     try {
         const newInteraction = new AdInteraction({
             ad: adId,
             user: userId, // Use userId from request
-            type: 'impression'
+            type: 'impression',
+            ipAddress,
+            userAgent
         });
         await newInteraction.save();
         res.status(200).json({ message: "Impression recorded" });
@@ -23,21 +27,26 @@ router.post('/impression', async (req, res) => {
 
 // Track ad clicks
 router.post('/click', async (req, res) => {
-    const { adId, userId } = req.body; // Extract adId and userId from request body
-
+    const { adId, userId } = req.body;
+    const ipAddress = req.ip; // Get IP address from request
+    const userAgent = req.get('User-Agent'); // Get user agent from request headers
+  
     try {
-        const newInteraction = new AdInteraction({
-            ad: adId,
-            user: userId, // Use userId from request
-            type: 'click'
-        });
-        await newInteraction.save();
-        res.status(200).json({ message: "Click recorded" });
+      const newInteraction = new AdInteraction({
+        ad: adId,
+        user: userId,
+        type: 'click',
+        ipAddress,
+        userAgent
+      });
+      await newInteraction.save();
+      res.status(200).json({ message: "Click recorded" });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error recording click" });
+      // Error handling
     }
-});
+  });
+  
+  
 // Get a random ad
 router.get('/random', async (req, res) => {
     try {
@@ -50,5 +59,7 @@ router.get('/random', async (req, res) => {
         res.status(500).json({ message: "Error fetching random ad" });
     }
 });
+
+
 
 module.exports = router;
