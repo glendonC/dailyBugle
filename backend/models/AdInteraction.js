@@ -19,7 +19,9 @@ const adInteractionSchema = new mongoose.Schema({
   timestamp: {
     type: Date,
     default: Date.now
-  }
+  },
+  ipAddress: { type: String },
+  userAgent: { type: String }
 });
 
 module.exports = mongoose.model('AdInteraction', adInteractionSchema);
