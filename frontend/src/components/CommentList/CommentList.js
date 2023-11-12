@@ -1,25 +1,33 @@
 import React from 'react';
-import './CommentList.css';
+import { List, ListItem, ListItemText, IconButton, ListItemSecondaryAction, Box } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const CommentList = ({ comments, currentUserId, onEditComment, onDeleteComment }) => {
-  return (
-      <div>
-          <div className="comment-list">
-          {comments.map((comment) => (
-              <div className="comment" key={comment._id}>
-                  <strong>{comment.author.username}</strong>
-                  <p>{comment.content}</p>
-                  {comment.author === currentUserId && (
-                    <div>
-                      <button onClick={() => onEditComment(comment._id, comment.content)}>Edit</button>
-                      <button onClick={() => onDeleteComment(comment._id, comment.story)}>Delete</button>
-                    </div>
-                  )}
-              </div>
-          ))}
-          </div>
-      </div>
-  );
+    return (
+        <Box mt={2}>
+            <List dense>
+                {comments.map((comment) => (
+                    <ListItem key={comment._id} divider>
+                        <ListItemText
+                            primary={<strong>{comment.author.username}</strong>}
+                            secondary={comment.content}
+                        />
+                        {comment.author === currentUserId && (
+                            <ListItemSecondaryAction>
+                                <IconButton edge="end" aria-label="edit" onClick={() => onEditComment(comment._id, comment.content)}>
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton edge="end" aria-label="delete" onClick={() => onDeleteComment(comment._id, comment.story)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </ListItemSecondaryAction>
+                        )}
+                    </ListItem>
+                ))}
+            </List>
+        </Box>
+    );
 };
 
 export default CommentList;
