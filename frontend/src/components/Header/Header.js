@@ -1,6 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../../AuthContext';
+import './Header.css';
 
 const Header = () => {
   const history = useHistory();
@@ -16,11 +17,11 @@ const Header = () => {
     <div>
         {auth.isAuthenticated ? (
             <>
-                <span>Welcome, {auth.username}</span> {}
-                <button onClick={handleSignout}>Sign Out</button>
+                <span className="username">{auth.username}</span> {}
+                <button className="sign-out-btn" onClick={handleSignout}>Sign Out</button>
             </>
         ) : (
-            <span>Your Header Markup Here</span>
+            <span>Sign up / Log in to see more</span>
         )}
     </div>
 );

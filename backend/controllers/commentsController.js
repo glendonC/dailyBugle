@@ -25,6 +25,40 @@ exports.createComment = async (req, res) => {
   }
 };
 
+exports.updateComment = async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const { content } = req.body;
+    const updatedComment = await Comment.findByIdAndUpdate(
+      commentId, 
+      { content },
+      { new: true }
+    );
+    if (!updatedComment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+    res.json(updatedComment);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// In your commentsController.js
+exports.deleteComment = async (req, res) => {
+  try {
+      const commentId = req.params.commentId;
+      // Additional logic to ensure the user is authorized to delete the comment
+      const deletedComment = await Comment.findByIdAndDelete(commentId);
+      if (!deletedComment) {
+          return res.status(404).json({ message: "Comment not found" });
+      }
+      res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (error) {
+      res.status(500).json({ message: "Error deleting comment", error: error.message });
+  }
+};
+
+
 exports.getCommentsByStory = async (req, res) => {
   try {
       const storyId = req.params.storyId;

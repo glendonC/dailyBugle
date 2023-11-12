@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../AuthContext';
 
 const AuthorView = () => {
     const [story, setStory] = useState({
@@ -9,6 +10,7 @@ const AuthorView = () => {
     });
     const [categories, setCategories] = useState([]);
     const [message, setMessage] = useState('');
+    const { auth } = useAuth(); // Use the useAuth hook
 
     useEffect(() => {
         fetch('http://localhost:5001/api/categories')
@@ -48,6 +50,7 @@ const AuthorView = () => {
 
     const categoryOptions = ["Technology", "Sports", "Entertainment", "Others"];
 
+    console.log("Auth state in AuthorView:", auth);
 
     return (
         <div>

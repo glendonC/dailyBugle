@@ -1,21 +1,20 @@
-// App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import { useAuth } from './AuthContext'; // Import useAuth
+import { useAuth } from './AuthContext';
 import './App.css';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
-import StoryList from './components/StoryList/StoryList';
-import CategoryList from './components/CategoryList/CategoryList';
 import AdBanner from './components/AdBanner/AdBanner';
 import StoryDisplay from './components/StoryDisplay/StoryDisplay';
 import LoginForm from './components/LoginForm/LoginForm';
 import SignupForm from './components/SignupForm/SignupForm';
 import ReaderView from './components/ReaderView/ReaderView';
 import AuthorView from './components/AuthorView/AuthorView';
+import UnauthenticatedView from './components/UnauthenticatedView/UnauthenticatedView';
+
 
 function App() {
-  const { auth, dispatch } = useAuth(); // Destructure auth and dispatch
+  const { auth, dispatch } = useAuth();
 
   const handleLogin = (loginResponse) => {
     dispatch({ 
@@ -30,7 +29,6 @@ function App() {
 
   const onSignup = (signupResponse) => {
     console.log("Signup successful:", signupResponse);
-    // Handle signup response
   };
 
   const handleLogout = () => {
@@ -54,18 +52,18 @@ function App() {
         <Header onLogout={handleLogout} />
         <Switch>
           <Route exact path="/">
-            <main>
-              {getRoleBasedView()}
-            </main>
+            {auth.isAuthenticated ? (
+              auth.userRole === 'reader' ? <Redirect to="/reader-view" /> : <Redirect to="/author-view" />
+            ) : (
+              <UnauthenticatedView />
+            )}
           </Route>
+          <Route path="/reader-view" component={ReaderView} />
+          <Route path="/author-view" component={AuthorView} />
           <Route path="/story/:id" component={StoryDisplay} />
-          <Route path="/login">
-            <LoginForm onLogin={handleLogin} />
-          </Route>
-          <Route path="/signup">
-            <SignupForm onSignup={onSignup} />
-          </Route>
-          {/* Other routes */}
+          <Route path="/login" render={(props) => <LoginForm onLogin={handleLogin} {...props} />} />
+          <Route path="/signup" render={(props) => <SignupForm onSignup={onSignup} {...props} />} />
+          {}
         </Switch>
         <AdBanner />
         <Footer />

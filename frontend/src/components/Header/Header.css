@@ -1,0 +1,23 @@
+.header {
+
+}
+
+.username {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+}
+
+.sign-out-btn {
+    padding: 10px 20px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.sign-out-btn:hover {
+    background-color: #d32f2f;
+}

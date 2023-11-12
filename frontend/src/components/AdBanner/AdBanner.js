@@ -1,4 +1,5 @@
 import React from 'react';
+import './AdBanner.css';
 
 function AdBanner() {
   // Placeholder for ad content
