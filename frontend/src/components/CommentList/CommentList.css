@@ -1,0 +1,17 @@
+.comment-list {
+    /* Other styles */
+}
+
+.comment {
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    /* Other styles */
+}
+
+.edit-delete-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}

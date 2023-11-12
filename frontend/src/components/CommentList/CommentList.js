@@ -1,12 +1,12 @@
-// CommentList.js
 import React from 'react';
+import './CommentList.css';
 
 const CommentList = ({ comments, currentUserId, onEditComment, onDeleteComment }) => {
   return (
       <div>
-          <h3>Comments</h3>
+          <div className="comment-list">
           {comments.map((comment) => (
-              <div key={comment._id}>
+              <div className="comment" key={comment._id}>
                   <strong>{comment.author.username}</strong>
                   <p>{comment.content}</p>
                   {comment.author === currentUserId && (
@@ -17,6 +17,7 @@ const CommentList = ({ comments, currentUserId, onEditComment, onDeleteComment }
                   )}
               </div>
           ))}
+          </div>
       </div>
   );
 };
