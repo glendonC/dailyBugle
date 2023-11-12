@@ -5,15 +5,16 @@ exports.getAllStories = async (req, res) => {
     let query = {};
     const search = req.query.search;
     if (search) {
-      query.title = { $regex: search, $options: 'i' }; // Case-insensitive regex search
+      query.title = { $regex: search, $options: 'i' };
     }
-    const stories = await Story.find(query).populate('author', 'username'); // Assuming you want to populate the author's username
+    const stories = await Story.find(query).populate('author', 'username').populate('category');
     res.json(stories);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "An error occurred" });
   }
 };
+
 
 
 exports.createStory = async (req, res) => {

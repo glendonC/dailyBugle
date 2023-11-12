@@ -1,8 +1,9 @@
-// ReaderView.js
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../AuthContext';
 import CommentForm from '../CommentForm/CommentForm';
 import CommentList from '../CommentList/CommentList';
-import { useAuth } from '../../AuthContext';
+import AdBanner from '../AdBanner/AdBanner';
+import { Container, Grid, Box, Typography, Paper, TextField, Chip } from '@mui/material';
 
 const ReaderView = () => {
     const [stories, setStories] = useState([]);
@@ -147,30 +148,45 @@ const ReaderView = () => {
         };
         
     
-    return (
-        <div>
-            <h1>Reader's View</h1>
-            <input 
-                type="text" 
-                placeholder="Search stories..." 
-                value={searchQuery} 
-                onChange={handleSearchChange} 
-            />
-            {filteredStories.map((story) => (
-                <div key={story._id}>
-                    <h2>{story.title}</h2>
-                    <p>{story.content}</p>
-                    <CommentForm onCommentSubmit={(commentContent) => submitComment(commentContent, story._id)} />
-                    <CommentList 
-                    comments={story.comments || []}
-                    currentUserId={auth.userId}
-                    onEditComment={handleEditComment}
-                    onDeleteComment={handleDeleteComment}
-                />
-                </div>
-            ))}
-        </div>
-    );
+        return (
+            <Container maxWidth="lg">
+                <Box my={4}>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} md={8}>
+                            <Typography variant="h4">Reader's View</Typography>
+                            <TextField
+                                fullWidth
+                                label="Search stories..."
+                                type="text"
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                margin="normal"
+                            />
+                            {filteredStories.map((story) => (
+                                <Box key={story._id} my={2} p={2} component={Paper} elevation={2}>
+                                    <Typography variant="h5">{story.title}</Typography>
+                                    {/* Display the category */}
+                                    {story.category && (
+                                        <Chip label={story.category.name} color="primary" size="small" style={{ margin: '10px 0' }} />
+                                    )}
+                                    <Typography variant="body1" gutterBottom>{story.content}</Typography>
+                                    <CommentForm onCommentSubmit={(commentContent) => submitComment(commentContent, story._id)} />
+                                    <CommentList
+                                        comments={story.comments || []}
+                                        currentUserId={auth.userId}
+                                        onEditComment={handleEditComment}
+                                        onDeleteComment={handleDeleteComment}
+                                    />
+                                </Box>
+                            ))}
+                        </Grid>
+                        <Grid item xs={12} md={4}>
+                            <AdBanner />
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Container>
+        );
 };
 
 export default ReaderView;

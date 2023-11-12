@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../AuthContext';
+import { TextField, Button, Select, MenuItem, FormControl, InputLabel, Box, Typography, Container } from '@mui/material';
 
 const AuthorView = () => {
     const [story, setStory] = useState({
@@ -10,7 +11,7 @@ const AuthorView = () => {
     });
     const [categories, setCategories] = useState([]);
     const [message, setMessage] = useState('');
-    const { auth } = useAuth(); // Use the useAuth hook
+    const { auth } = useAuth();
 
     useEffect(() => {
         fetch('http://localhost:5001/api/categories')
@@ -19,91 +20,98 @@ const AuthorView = () => {
             .catch(error => console.error('Error fetching categories:', error));
     }, []);
 
-    // Handle changes in form inputs
     const handleChange = (event) => {
         const { name, value } = event.target;
         setStory({ ...story, [name]: value });
     };
 
-    // Handle form submission
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const response = await fetch('http://localhost:5001/api/stories', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(story)
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Include authorization header if your API requires it
+                },
+                body: JSON.stringify({
+                    title: story.title,
+                    teaser: story.teaser,
+                    content: story.content,
+                    category: story.category,
+                    // Include author information if necessary, e.g., author: auth.userId
+                }),
             });
+    
             const data = await response.json();
             if (response.ok) {
                 setMessage('Story submitted successfully!');
-                setStory({ title: '', teaser: '', content: '', category: '' });
+                setStory({ title: '', teaser: '', content: '', category: '' }); // Clear the form fields
             } else {
-                setMessage(`Submission failed: ${data.message}`);
+                throw new Error(data.message || 'Failed to submit story');
             }
         } catch (error) {
             console.error('Error:', error);
             setMessage('An error occurred while submitting the story.');
         }
     };
-
-
-    const categoryOptions = ["Technology", "Sports", "Entertainment", "Others"];
-
-    console.log("Auth state in AuthorView:", auth);
+    
 
     return (
-        <div>
-            <h1>Author's View</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Title:</label>
-                    <input 
-                        type="text" 
+        <Container maxWidth="md">
+            <Box my={4}>
+                <Typography variant="h4">Author's View</Typography>
+                <form onSubmit={handleSubmit}>
+                    <TextField 
+                        fullWidth 
+                        label="Title" 
                         name="title" 
                         value={story.title} 
                         onChange={handleChange} 
+                        margin="normal"
                     />
-                </div>
-                <div>
-                    <label>Teaser:</label>
-                    <input 
-                        type="text" 
+                    <TextField 
+                        fullWidth 
+                        label="Teaser" 
                         name="teaser" 
                         value={story.teaser} 
                         onChange={handleChange} 
+                        margin="normal"
                     />
-                </div>
-                <div>
-                    <label>Content:</label>
-                    <textarea 
+                    <TextField 
+                        fullWidth 
+                        label="Content" 
                         name="content" 
+                        multiline 
+                        rows={4} 
                         value={story.content} 
                         onChange={handleChange}
-                    ></textarea>
-                </div>
-
-                <div>
-                    <label>Category:</label>
-                    <select 
-                        name="category" 
-                        value={story.category} 
-                        onChange={handleChange}
-                    >
-                        <option value="">Select Category</option>
-                        {categories.map(category => (
-                            <option key={category._id} value={category._id}>
-                                {category.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* Include additional fields as needed */}
-                <button type="submit">Publish Story</button>
-            </form>
-            {message && <p>{message}</p>}
-        </div>
+                        margin="normal"
+                    />
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel>Category</InputLabel>
+                        <Select 
+                            name="category" 
+                            value={story.category} 
+                            onChange={handleChange}
+                        >
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+                            {categories.map(category => (
+                                <MenuItem key={category._id} value={category._id}>
+                                    {category.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <Button variant="contained" color="primary" type="submit" margin="normal">
+                        Publish Story
+                    </Button>
+                </form>
+                {message && <Typography color="textSecondary">{message}</Typography>}
+            </Box>
+        </Container>
     );
 };
 

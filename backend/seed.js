@@ -63,12 +63,12 @@ async function seedDB() {
     const createdCategories = await Category.insertMany(seedCategories);
     console.log('Categories seeded!');
 
-    // Seed Stories (assigning random categories and authors)
-    const seedStories = createdCategories.map((category, index) => ({
+    const numberOfStories = 3; // Define how many stories you want to seed
+    const seedStories = Array.from({ length: numberOfStories }, (_, index) => ({
       title: `Story ${index + 1}`,
       content: `Content for story ${index + 1}`,
       author: createdUsers[Math.floor(Math.random() * createdUsers.length)]._id,
-      category: category._id
+      category: createdCategories[Math.floor(Math.random() * createdCategories.length)]._id
     }));
 
     await Story.insertMany(seedStories);
