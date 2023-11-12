@@ -65,7 +65,6 @@ function App() {
           <Route path="/signup" render={(props) => <SignupForm onSignup={onSignup} {...props} />} />
           {}
         </Switch>
-        <AdBanner />
         <Footer />
       </div>
     </Router>
