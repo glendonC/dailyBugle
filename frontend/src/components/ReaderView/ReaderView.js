@@ -1,8 +1,8 @@
-// ReaderView.js
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../AuthContext';
 import CommentForm from '../CommentForm/CommentForm';
 import CommentList from '../CommentList/CommentList';
-import { useAuth } from '../../AuthContext';
+import { Container, Box, Typography, TextField, Paper } from '@mui/material';
 
 const ReaderView = () => {
     const [stories, setStories] = useState([]);
@@ -147,30 +147,34 @@ const ReaderView = () => {
         };
         
     
-    return (
-        <div>
-            <h1>Reader's View</h1>
-            <input 
-                type="text" 
-                placeholder="Search stories..." 
-                value={searchQuery} 
-                onChange={handleSearchChange} 
-            />
-            {filteredStories.map((story) => (
-                <div key={story._id}>
-                    <h2>{story.title}</h2>
-                    <p>{story.content}</p>
-                    <CommentForm onCommentSubmit={(commentContent) => submitComment(commentContent, story._id)} />
-                    <CommentList 
-                    comments={story.comments || []}
-                    currentUserId={auth.userId}
-                    onEditComment={handleEditComment}
-                    onDeleteComment={handleDeleteComment}
-                />
-                </div>
-            ))}
-        </div>
-    );
+        return (
+            <Container maxWidth="md">
+                <Box my={4}>
+                    <Typography variant="h4">Reader's View</Typography>
+                    <TextField
+                        fullWidth
+                        label="Search stories..."
+                        type="text"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        margin="normal"
+                    />
+                    {filteredStories.map((story) => (
+                        <Box key={story._id} my={2} p={2} component={Paper} elevation={2}>
+                            <Typography variant="h5">{story.title}</Typography>
+                            <Typography variant="body1" gutterBottom>{story.content}</Typography>
+                            <CommentForm onCommentSubmit={(commentContent) => submitComment(commentContent, story._id)} />
+                            <CommentList
+                                comments={story.comments || []}
+                                currentUserId={auth.userId}
+                                onEditComment={handleEditComment}
+                                onDeleteComment={handleDeleteComment}
+                            />
+                        </Box>
+                    ))}
+                </Box>
+            </Container>
+        );
 };
 
 export default ReaderView;
