@@ -25,6 +25,20 @@ exports.createComment = async (req, res) => {
   }
 };
 
+exports.updateComment = async (req, res) => {
+  try {
+      const { commentId } = req.params;
+      const { content } = req.body;
+      const updatedComment = await Comment.findByIdAndUpdate(commentId, { content }, { new: true });
+      if (!updatedComment) {
+          return res.status(404).json({ message: 'Comment not found' });
+      }
+      res.json(updatedComment);
+  } catch (error) {
+      res.status(400).json({ message: error.message });
+  }
+};
+
 exports.getCommentsByStory = async (req, res) => {
   try {
       const storyId = req.params.storyId;

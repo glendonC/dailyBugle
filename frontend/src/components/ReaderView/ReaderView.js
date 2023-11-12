@@ -80,6 +80,43 @@ const ReaderView = () => {
         }
     };
     
+    const handleEditComment = async (comment) => {
+        // Implementation depends on how you want to handle the edit interface
+        // For example, you could prompt for the new content via window.prompt
+        const newContent = window.prompt("Edit your comment:", comment.content);
+        if (newContent && newContent !== comment.content) {
+            try {
+                const response = await fetch(`http://localhost:5001/api/comments/${comment._id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Include authorization token if required
+                    },
+                    body: JSON.stringify({ content: newContent }),
+                });
+    
+                const updatedComment = await response.json();
+                if (response.ok) {
+                    // Update the stories state to reflect the edited comment
+                    setStories(stories.map(story => {
+                        if (story._id === comment.story) {
+                            return {
+                                ...story,
+                                comments: story.comments.map(c => c._id === comment._id ? updatedComment : c)
+                            };
+                        }
+                        return story;
+                    }));
+                } else {
+                    throw new Error(updatedComment.message || 'Failed to edit comment');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Handle error in editing comment
+            }
+        }
+    };
+    
     return (
         <div>
             <h1>Reader's View</h1>
@@ -94,7 +131,11 @@ const ReaderView = () => {
                     <h2>{story.title}</h2>
                     <p>{story.content}</p>
                     <CommentForm onCommentSubmit={(commentContent) => submitComment(commentContent, story._id)} />
-                    <CommentList comments={story.comments || []} />
+                    <CommentList 
+                            comments={story.comments || []}
+                            currentUserId={auth.userId}
+                            onEditComment={handleEditComment}
+                    />
                 </div>
             ))}
         </div>
