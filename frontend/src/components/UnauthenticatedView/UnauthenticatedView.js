@@ -48,7 +48,7 @@ const UnauthenticatedView = () => {
                     <Grid item xs={12} key={story._id}>
                         <Paper elevation={2} style={{ padding: 16 }}>
                             <Typography variant="h6">{story.title}</Typography>
-                            <Typography variant="body1">{story.content}</Typography>
+                            <Typography variant="body1">{story.teaser}</Typography>
                         </Paper>
                     </Grid>
                 ))}
