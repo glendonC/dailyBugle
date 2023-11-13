@@ -10,11 +10,11 @@ const UnauthenticatedView = () => {
     useEffect(() => {
         const fetchStories = async () => {
             try {
-                console.log("useEffect in AdBanner is running");
                 const response = await fetch('http://localhost:5001/api/stories');
                 const storyData = await response.json();
                 if (response.ok) {
                     setStories(storyData);
+                    console.log("useEffect in AdBanner is running");
                 } else {
                     throw new Error('Failed to fetch stories');
                 }

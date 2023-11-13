@@ -2,7 +2,6 @@ import React, { createContext, useReducer } from 'react';
 
 const AuthContext = createContext();
 
-// Define an initial state
 const initialState = {
   isAuthenticated: false,
   userRole: null,
@@ -10,7 +9,6 @@ const initialState = {
   userId: null
 };
 
-// Define a reducer function
 function authReducer(state, action) {
   switch (action.type) {
     case 'LOGIN':

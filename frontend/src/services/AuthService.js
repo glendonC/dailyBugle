@@ -12,7 +12,7 @@ const AuthService = {
         if (!response.ok) {
           throw new Error(data.message || 'Error signing up');
         }
-        return data; // Return the data if signup was successful
+        return data;
       } catch (error) {
         console.error('Signup error:', error);
         throw error;
