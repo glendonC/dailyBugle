@@ -33,7 +33,7 @@ function App() {
   const handleLogout = () => {
     dispatch({ type: 'LOGOUT' });
   };
-  
+
   return (
     <Router>
       <div className="App">

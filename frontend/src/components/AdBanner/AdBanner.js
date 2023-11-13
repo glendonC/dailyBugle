@@ -40,6 +40,7 @@ function AdBanner({ trackImpression=false }) {
     const handleCloseModal = (event) => {
         event.stopPropagation();
         setOpenModal(false); 
+
     };
 
     if (!ad) return null;
