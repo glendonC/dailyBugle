@@ -1,13 +1,10 @@
-// controllers/advertisementsController.js
-
 const AdInteraction = require('../models/AdInteraction');
 
 exports.trackInteraction = async (req, res) => {
   const { adId } = req.params;
-  const userId = req.user._id; // Replace with actual user ID retrieval logic
+  const userId = req.user._id;
 
   try {
-    // Track the click interaction
     await new AdInteraction({
       ad: adId,
       user: userId,
@@ -22,10 +19,8 @@ exports.trackInteraction = async (req, res) => {
 
 
 exports.serveAd = async (req, res) => {
-    // Logic to select an ad goes here
     const ad = {};
   
-    // Track the impression
     await new AdInteraction({
       ad: ad._id,
       user: req.user._id,
@@ -33,5 +28,5 @@ exports.serveAd = async (req, res) => {
     }).save();
   
     res.json(ad);
-  };
+};
   
