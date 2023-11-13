@@ -3,16 +3,17 @@ import { useAuth } from '../../AuthContext';
 import CommentForm from '../CommentForm/CommentForm';
 import CommentList from '../CommentList/CommentList';
 import AdBanner from '../AdBanner/AdBanner';
-import { Container, Grid, Box, Typography, Paper, TextField, Chip } from '@mui/material';
+import { Container, Box, Typography, Paper, TextField, Chip, Button } from '@mui/material';
 
 const ReaderView = () => {
     const [stories, setStories] = useState([]);
     const [filteredStories, setFilteredStories] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const { auth } = useAuth();
+    const [currentStory, setCurrentStory] = useState(null);
+    const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
 
     useEffect(() => {
-        // Fetch stories along with their comments
         const fetchStories = async () => {
             try {
                 const response = await fetch('http://localhost:5001/api/stories');
@@ -24,7 +25,7 @@ const ReaderView = () => {
                         return { ...story, comments: commentData };
                     }));
                     setStories(storiesWithComments);
-                    setFilteredStories(storiesWithComments); // Initialize filteredStories with all stories
+                    setFilteredStories(storiesWithComments);
                 } else {
                     throw new Error('Failed to fetch stories');
                 }
@@ -41,18 +42,16 @@ const ReaderView = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // Include authorization token if required
                 },
                 body: JSON.stringify({
-                    content, // Content of the comment
-                    author: auth.userId, // Replace with actual logged-in user's ID
-                    story: storyId, // Story ID to which the comment belongs
+                    content,
+                    author: auth.userId,
+                    story: storyId,
                 }),
             });
     
             const newComment = await response.json();
             if (response.ok) {
-                // Update the stories state to include the new comment
                 setStories(stories.map(story => {
                     if (story._id === storyId) {
                         return { ...story, comments: [...story.comments, newComment] };
@@ -64,129 +63,146 @@ const ReaderView = () => {
             }
         } catch (error) {
             console.error('Error:', error);
-            // Handle error in submitting comment
         }
     };
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
+    
         if (e.target.value === '') {
-            setFilteredStories(stories);
+            setCurrentStory(stories[0]);
+            setCurrentStoryIndex(0);
         } else {
-            const filtered = stories.filter(story => 
+            const index = stories.findIndex(story => 
                 story.title.toLowerCase().includes(e.target.value.toLowerCase()) ||
                 story.content.toLowerCase().includes(e.target.value.toLowerCase())
             );
-            setFilteredStories(filtered);
+    
+            if (index !== -1) {
+                setCurrentStory(stories[index]);
+                setCurrentStoryIndex(index);
+            }
         }
     };
+    
 
-        // Function to handle editing a comment
-        const handleEditComment = async (commentId, newContent) => {
-            // Prompt for new content, return if no changes
-            const updatedContent = window.prompt("Edit your comment:", newContent);
-            if (!updatedContent || updatedContent === newContent) return;
-        
-            try {
-                const response = await fetch(`http://localhost:5001/api/comments/${commentId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // Include authorization token if required
-                    },
-                    body: JSON.stringify({ content: updatedContent }),
-                });
-        
-                const updatedComment = await response.json();
-                if (response.ok) {
-                    // Update the stories state to reflect the edited comment
-                    setStories(stories.map(story => ({
-                        ...story,
-                        comments: story.comments.map(comment =>
-                            comment._id === commentId ? { ...comment, content: updatedContent } : comment
-                        ),
-                    })));
-                } else {
-                    throw new Error(updatedComment.message || 'Failed to edit comment');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                // Handle error in editing comment
+    const handleEditComment = async (commentId, newContent) => {
+        const updatedContent = window.prompt("Edit your comment:", newContent);
+        if (!updatedContent || updatedContent === newContent) return;
+    
+        try {
+            const response = await fetch(`http://localhost:5001/api/comments/${commentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content: updatedContent }),
+            });
+    
+            const updatedComment = await response.json();
+            if (response.ok) {
+                setStories(stories.map(story => ({
+                    ...story,
+                    comments: story.comments.map(comment =>
+                        comment._id === commentId ? { ...comment, content: updatedContent } : comment
+                    ),
+                })));
+            } else {
+                throw new Error(updatedComment.message || 'Failed to edit comment');
             }
-        };
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
         
     
-        // Function to handle deleting a comment
-        const handleDeleteComment = async (commentId, storyId) => {
-            try {
-                const response = await fetch(`http://localhost:5001/api/comments/${commentId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // Include authorization token if required
+    const handleDeleteComment = async (commentId, storyId) => {
+        try {
+            const response = await fetch(`http://localhost:5001/api/comments/${commentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+    
+            if (response.ok) {
+                setStories(stories.map(story => {
+                    if (story._id === storyId) {
+                        return {
+                            ...story,
+                            comments: story.comments.filter(comment => comment._id !== commentId)
+                        };
                     }
-                });
-        
-                if (response.ok) {
-                    // Remove the deleted comment from the state
-                    setStories(stories.map(story => {
-                        if (story._id === storyId) {
-                            return {
-                                ...story,
-                                comments: story.comments.filter(comment => comment._id !== commentId)
-                            };
-                        }
-                        return story;
-                    }));
-                } else {
-                    throw new Error('Failed to delete comment');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                // Handle error in deleting comment
+                    return story;
+                }));
+            } else {
+                throw new Error('Failed to delete comment');
             }
-        };
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+        
+    const handleNextStory = () => {
+        if (currentStoryIndex < stories.length - 1) {
+            setCurrentStoryIndex(currentStoryIndex + 1);
+            setCurrentStory(stories[currentStoryIndex + 1]);
+        }
+    };
+        
+    const handlePreviousStory = () => {
+        if (currentStoryIndex > 0) {
+            setCurrentStoryIndex(currentStoryIndex - 1);
+            setCurrentStory(stories[currentStoryIndex - 1]);
+        }
+    };
         
     
-        return (
-            <Container maxWidth="lg">
-                <Box my={4}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} md={8}>
-                            <Typography variant="h4">Reader's View</Typography>
-                            <TextField
-                                fullWidth
-                                label="Search stories..."
-                                type="text"
-                                value={searchQuery}
-                                onChange={handleSearchChange}
-                                margin="normal"
-                            />
-                            {filteredStories.map((story) => (
-                                <Box key={story._id} my={2} p={2} component={Paper} elevation={2}>
-                                    <Typography variant="h5">{story.title}</Typography>
-                                    {/* Display the category */}
-                                    {story.category && (
-                                        <Chip label={story.category.name} color="primary" size="small" style={{ margin: '10px 0' }} />
-                                    )}
-                                    <Typography variant="body1" gutterBottom>{story.content}</Typography>
-                                    <CommentForm onCommentSubmit={(commentContent) => submitComment(commentContent, story._id)} />
-                                    <CommentList
-                                        comments={story.comments || []}
-                                        currentUserId={auth.userId}
-                                        onEditComment={handleEditComment}
-                                        onDeleteComment={handleDeleteComment}
-                                    />
-                                </Box>
-                            ))}
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <AdBanner />
-                        </Grid>
-                    </Grid>
+    return (
+        <Container maxWidth="lg">
+            <Box my={4}>
+                <Typography variant="h4">Reader's View</Typography>
+                
+                {}
+                <TextField
+                    fullWidth
+                    label="Search stories..."
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    margin="normal"
+                />
+    
+                {}
+                {currentStory && (
+                    <Box my={2} p={2} component={Paper} elevation={2}>
+                        <Typography variant="h5">{currentStory.title}</Typography>
+                        {}
+                        {currentStory.category && (
+                            <Chip label={currentStory.category.name} color="primary" size="small" style={{ margin: '10px 0' }} />
+                        )}
+                        <Typography variant="body1" gutterBottom>{currentStory.content}</Typography>
+                        <CommentForm onCommentSubmit={(commentContent) => submitComment(commentContent, currentStory._id)} />
+                        <CommentList
+                            comments={currentStory.comments || []}
+                            currentUserId={auth.userId}
+                            onEditComment={handleEditComment}
+                            onDeleteComment={handleDeleteComment}
+                        />
+                    </Box>
+                )}
+                {!currentStory && <Typography>Loading story...</Typography>}
+    
+                {}
+                <Box display="flex" justifyContent="space-between" my={2}>
+                    <Button onClick={handlePreviousStory} disabled={currentStoryIndex === 0}>Previous</Button>
+                    <Button onClick={handleNextStory} disabled={currentStoryIndex === stories.length - 1}>Next</Button>
                 </Box>
-            </Container>
-        );
+            </Box>
+            <AdBanner />
+        </Container>
+    );
+        
 };
 
 export default ReaderView;
