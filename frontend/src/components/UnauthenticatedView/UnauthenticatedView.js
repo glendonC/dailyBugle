@@ -10,6 +10,7 @@ const UnauthenticatedView = () => {
     useEffect(() => {
         const fetchStories = async () => {
             try {
+                console.log("useEffect in AdBanner is running");
                 const response = await fetch('http://localhost:5001/api/stories');
                 const storyData = await response.json();
                 if (response.ok) {
@@ -52,7 +53,7 @@ const UnauthenticatedView = () => {
                     </Grid>
                 ))}
             </Grid>
-            <AdBanner />
+            <AdBanner trackImpression={true} />
         </Container>
     );
 };

@@ -1,5 +1,3 @@
-// frontend/src/components/StoryList/StoryList.js
-
 import React, { useState, useEffect } from 'react';
 
 const StoryList = () => {

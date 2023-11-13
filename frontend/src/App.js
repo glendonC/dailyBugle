@@ -4,7 +4,6 @@ import { useAuth } from './AuthContext';
 import './App.css';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
-import AdBanner from './components/AdBanner/AdBanner';
 import StoryDisplay from './components/StoryDisplay/StoryDisplay';
 import LoginForm from './components/LoginForm/LoginForm';
 import SignupForm from './components/SignupForm/SignupForm';
@@ -34,18 +33,7 @@ function App() {
   const handleLogout = () => {
     dispatch({ type: 'LOGOUT' });
   };
-
-  const getRoleBasedView = () => {
-    switch (auth.userRole) {
-      case 'reader':
-        return <ReaderView />;
-      case 'author':
-        return <AuthorView />;
-      default:
-        return <div>Select a role to get started</div>;
-    }
-  };
-
+  
   return (
     <Router>
       <div className="App">

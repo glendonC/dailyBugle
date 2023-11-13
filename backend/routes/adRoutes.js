@@ -3,16 +3,15 @@ const router = express.Router();
 const AdInteraction = require('../models/AdInteraction');
 const Advertisement = require('../models/Advertisement');
 
-// Track ad impressions
 router.post('/impression', async (req, res) => {
-    const { adId, userId } = req.body; // Extract adId and userId from request body
-    const ipAddress = req.ip; // Get IP address from request
-    const userAgent = req.get('User-Agent'); // Get user agent from request headers
+    const { adId, userId } = req.body;
+    const ipAddress = req.ip;
+    const userAgent = req.get('User-Agent');
 
     try {
         const newInteraction = new AdInteraction({
             ad: adId,
-            user: userId, // Use userId from request
+            user: userId,
             type: 'impression',
             ipAddress,
             userAgent
@@ -20,16 +19,15 @@ router.post('/impression', async (req, res) => {
         await newInteraction.save();
         res.status(200).json({ message: "Impression recorded" });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error recording impression" });
+      console.error("Error recording impression:", error);
+      res.status(500).json({ message: "Error recording impression", error: error.message });
     }
 });
 
-// Track ad clicks
 router.post('/click', async (req, res) => {
     const { adId, userId } = req.body;
-    const ipAddress = req.ip; // Get IP address from request
-    const userAgent = req.get('User-Agent'); // Get user agent from request headers
+    const ipAddress = req.ip;
+    const userAgent = req.get('User-Agent');
   
     try {
       const newInteraction = new AdInteraction({
@@ -42,12 +40,9 @@ router.post('/click', async (req, res) => {
       await newInteraction.save();
       res.status(200).json({ message: "Click recorded" });
     } catch (error) {
-      // Error handling
     }
   });
   
-  
-// Get a random ad
 router.get('/random', async (req, res) => {
     try {
         const count = await Advertisement.countDocuments();

@@ -12,7 +12,7 @@ const ReaderView = () => {
     const { auth } = useAuth();
     const [currentStory, setCurrentStory] = useState(null);
     const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
-
+    const [adImpressionTracked, setAdImpressionTracked] = useState(false);
     useEffect(() => {
         const fetchStories = async () => {
             try {
@@ -26,6 +26,7 @@ const ReaderView = () => {
                     }));
                     setStories(storiesWithComments);
                     setFilteredStories(storiesWithComments);
+                    setAdImpressionTracked(true);  // Set the ad impression to be tracked
                 } else {
                     throw new Error('Failed to fetch stories');
                 }
@@ -199,7 +200,7 @@ const ReaderView = () => {
                     <Button onClick={handleNextStory} disabled={currentStoryIndex === stories.length - 1}>Next</Button>
                 </Box>
             </Box>
-            <AdBanner />
+            <AdBanner trackImpression={adImpressionTracked} />
         </Container>
     );
         
