@@ -60,7 +60,6 @@ const AuthorView = () => {
                 method: method,
                 headers: {
                     'Content-Type': 'application/json',
-                    // Include authorization header if your API requires it
                 },
                 body: JSON.stringify({
                     title: story.title,
@@ -74,13 +73,11 @@ const AuthorView = () => {
             const data = await response.json();
             if (response.ok) {
                 if (story.id) {
-                    // Update existing story in authorStories
                     setAuthorStories(authorStories.map(item => 
                         item._id === story.id ? data : item
                     ));
                     setMessage('Story updated successfully!');
                 } else {
-                    // Add new story to authorStories
                     setAuthorStories([...authorStories, data]);
                     setMessage('Story submitted successfully!');
                 }

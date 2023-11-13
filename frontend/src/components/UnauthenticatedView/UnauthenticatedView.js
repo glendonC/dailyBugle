@@ -14,6 +14,7 @@ const UnauthenticatedView = () => {
                 const storyData = await response.json();
                 if (response.ok) {
                     setStories(storyData);
+                    console.log("useEffect in AdBanner is running");
                 } else {
                     throw new Error('Failed to fetch stories');
                 }
@@ -47,12 +48,12 @@ const UnauthenticatedView = () => {
                     <Grid item xs={12} key={story._id}>
                         <Paper elevation={2} style={{ padding: 16 }}>
                             <Typography variant="h6">{story.title}</Typography>
-                            <Typography variant="body1">{story.content}</Typography>
+                            <Typography variant="body1">{story.teaser}</Typography>
                         </Paper>
                     </Grid>
                 ))}
             </Grid>
-            <AdBanner />
+            <AdBanner trackImpression={true} />
         </Container>
     );
 };

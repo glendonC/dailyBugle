@@ -43,11 +43,9 @@ exports.updateComment = async (req, res) => {
   }
 };
 
-// In your commentsController.js
 exports.deleteComment = async (req, res) => {
   try {
       const commentId = req.params.commentId;
-      // Additional logic to ensure the user is authorized to delete the comment
       const deletedComment = await Comment.findByIdAndDelete(commentId);
       if (!deletedComment) {
           return res.status(404).json({ message: "Comment not found" });
@@ -62,7 +60,7 @@ exports.deleteComment = async (req, res) => {
 exports.getCommentsByStory = async (req, res) => {
   try {
       const storyId = req.params.storyId;
-      const comments = await Comment.find({ story: storyId }).populate('author', 'username'); // Assuming you want to populate author details
+      const comments = await Comment.find({ story: storyId }).populate('author', 'username');
       res.json(comments);
   } catch (error) {
       res.status(500).json({ message: error.message });

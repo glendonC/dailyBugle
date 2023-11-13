@@ -19,8 +19,8 @@ router.post('/impression', async (req, res) => {
         await newInteraction.save();
         res.status(200).json({ message: "Impression recorded" });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error recording impression" });
+      console.error("Error recording impression:", error);
+      res.status(500).json({ message: "Error recording impression", error: error.message });
     }
 });
 
@@ -42,7 +42,6 @@ router.post('/click', async (req, res) => {
     } catch (error) {
     }
   });
-  
   
 router.get('/random', async (req, res) => {
     try {

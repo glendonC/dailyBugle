@@ -28,5 +28,5 @@ exports.serveAd = async (req, res) => {
     }).save();
   
     res.json(ad);
-  };
+};
   

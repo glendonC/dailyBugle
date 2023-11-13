@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Paper, Modal, Button } from '@mui/material';
 import { useAuth } from '../../AuthContext';
 
-function AdBanner() {
+function AdBanner({ trackImpression=false }) {
     const [ad, setAd] = useState(null);
     const [openModal, setOpenModal] = useState(false);
     const { auth } = useAuth();
+
     const userId = auth.userId ? auth.userId : 'anonymous';
 
     useEffect(() => {
@@ -13,14 +14,17 @@ function AdBanner() {
             .then(response => response.json())
             .then(data => {
                 setAd(data);
-                fetch('http://localhost:5001/api/ads/impression', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ adId: data._id, userId })
-                });
+
+                if (trackImpression) {
+                    fetch('http://localhost:5001/api/ads/impression', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ adId: data._id, userId })
+                    });
+                }
             })
             .catch(error => console.error('Error fetching random ad:', error));
-    }, [auth.userId]);
+    }, [userId, trackImpression]);
 
     const handleAdClick = () => {
         if (ad) {
@@ -35,7 +39,8 @@ function AdBanner() {
 
     const handleCloseModal = (event) => {
         event.stopPropagation();
-        setOpenModal(false);
+        setOpenModal(false); 
+
     };
 
     if (!ad) return null;

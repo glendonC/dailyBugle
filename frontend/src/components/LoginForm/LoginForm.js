@@ -17,7 +17,6 @@ const LoginForm = ({ onLogin }) => {
         onLogin(response);
         history.push('/');
       } else {
-        // Handle unsuccessful login
       }
     } catch (error) {
       console.error(error);

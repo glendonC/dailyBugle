@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import CommentList from '../CommentList/CommentList';
 import CommentForm from '../CommentForm/CommentForm';
-import AdBanner from '../AdBanner/AdBanner';
 
 const StoryDisplay = () => {
   const [story, setStory] = useState(null);
@@ -41,9 +40,6 @@ const StoryDisplay = () => {
           <CommentForm onCommentSubmit={handleCommentSubmit} />
           <CommentList comments={story.comments} />
         </div>
-      </div>
-      <div className="ad-section">
-        <AdBanner />
       </div>
     </div>
   );
